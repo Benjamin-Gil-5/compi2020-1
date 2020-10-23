@@ -18,7 +18,6 @@ namespace at.jku.ssw.cc //Compilador //text_Box_Mio
     public partial class Form1 : Form
     {
         public text_Box_Mio.continuar instContinuar;  // 
-
         public RichTextBox Editor;
         public TabPage T;
 
@@ -1199,7 +1198,7 @@ namespace at.jku.ssw.cc //Compilador //text_Box_Mio
         private void árbolDeDerivaciónToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Parser.muestraProducciones = true;
-            Parser.muestraCargaDeInstrs = Tab.muestraTabSimb = false;
+            Parser.muestraCargaDeInstrs = Tab.muestraTabSimb = Parser.muestraTokens = false;
             tabControl1.SelectedIndex = 0;
             treeView1.Nodes.Clear();
             inicializa();
@@ -1218,7 +1217,7 @@ namespace at.jku.ssw.cc //Compilador //text_Box_Mio
             tabControl1.SelectedIndex = 1;
 
             inicializa();
-            Parser.muestraProducciones = Parser.muestraCargaDeInstrs = false;
+            Parser.muestraProducciones = Parser.muestraCargaDeInstrs = Parser.muestraTokens = false;
             Tab.muestraTabSimb = true;
             compilar();
             // this.Close();
@@ -1226,7 +1225,7 @@ namespace at.jku.ssw.cc //Compilador //text_Box_Mio
 
         private void instruccionesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Parser.muestraProducciones = Tab.muestraTabSimb = false;
+            Parser.muestraProducciones = Tab.muestraTabSimb = Parser.muestraTokens = false;
             Parser.muestraCargaDeInstrs = true;
             tabControl1.SelectedIndex = 2;
             inicializa();
@@ -1425,6 +1424,18 @@ namespace at.jku.ssw.cc //Compilador //text_Box_Mio
             
             pr.StartInfo.FileName = "z_gramatica.txt";
             pr.Start();
+        }
+
+        private void tokensToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            tabControl1.SelectedIndex = 3;
+            treeToken.Nodes.Clear();
+            Parser.muestraProducciones = false;
+            Tab.muestraTabSimb = false;
+            Parser.muestraCargaDeInstrs = false;
+            Parser.muestraTokens = true;
+            compilar();
         }
 
         private void acercaToolStripMenuItem_Click(object sender, EventArgs e)

@@ -63,6 +63,7 @@ namespace at.jku.ssw.cc
 
         public static bool muestraProducciones = true;
         public static bool muestraCargaDeInstrs = true;
+        public static bool muestraTokens = true;
         public static bool ejecuta = false;
 
         public static PilaMia pilita = new PilaMia(10);
@@ -88,6 +89,20 @@ namespace at.jku.ssw.cc
             Program1.form1.treeView1.ExpandAll();
         }//Fin MessageBoxCon3Preg()
 
+        public static void mensajeTOKENS(string nodo)
+        {
+            if(muestraTokens)
+            {
+                Program1.form1.instContinuar.ShowDialog();
+                Program1.form1.treeToken.Nodes.Insert(0,nodo);
+            }
+            else
+            {
+                Program1.form1.treeToken.Nodes.Insert(0, nodo);
+                Program1.form1.treeToken.ExpandAll();
+            }
+            
+        }
 
         public enum AccionInstr
         {
@@ -195,6 +210,7 @@ namespace at.jku.ssw.cc
         public static Token laToken;  // lookahead token (not yet recognized)
         static int la;         // shortcut to kind attribute of lookahead token (laToken.kind)
 
+
         /* Symbol table object of currently compiled method. */
         internal static Symbol curMethod;
 
@@ -208,6 +224,10 @@ namespace at.jku.ssw.cc
             laToken = Scanner.Next();
             //La 1° vez q se ejecuta, token queda con Token(1, 1), laToken con "class" (primer token del programa)
             la = laToken.kind;
+            if (token.kind!=0)
+            {
+                mensajeTOKENS(Convert.ToString("t.kind: " + Convert.ToString(token.kind) + " tipo: " + Convert.ToString(token.str)));
+            }
         }
 
         /* Verifies symbol and reads ahead. */
