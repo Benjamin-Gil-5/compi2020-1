@@ -63,7 +63,7 @@ namespace at.jku.ssw.cc
 
         public static bool muestraProducciones = true;
         public static bool muestraCargaDeInstrs = true;
-        public static bool muestraTokens = true;
+        public static bool muestraTokens = false;
         public static bool ejecuta = false;
 
         public static PilaMia pilita = new PilaMia(10);
@@ -76,7 +76,7 @@ namespace at.jku.ssw.cc
         {
             if (muestraProducciones)
             {
-                //Program1.form1.instContinuar.ShowDialog();
+                Program1.form1.instContinuar.ShowDialog();
                 if (ultimoNodo.IsVisible == false) ultimoNodo.EnsureVisible();
                 if (ultimoNodo.LastNode != null) ultimoNodo.LastNode.EnsureVisible();
             }
@@ -218,6 +218,7 @@ namespace at.jku.ssw.cc
         //static readonly Label undef;
 
         /* Reads ahead one symbol. */
+        static int conta = 0;
         static void Scan()
         {
             token = laToken;
@@ -226,7 +227,8 @@ namespace at.jku.ssw.cc
             la = laToken.kind;
             if (token.kind!=0)
             {
-                mensajeTOKENS(Convert.ToString("t.kind: " + Convert.ToString(token.kind) + " tipo: " + Convert.ToString(token.str)));
+                conta++;
+                mensajeTOKENS(Convert.ToString("t.kind: " + Convert.ToString(token.kind) + " tipo: " + Convert.ToString(token.str)) + conta );
             }
         }
 
@@ -246,21 +248,19 @@ namespace at.jku.ssw.cc
             Program1.form1.treeView1.Nodes.Add(program); //"cuelga" el nodo (raiz) "program" del treeView1 ya creado
             Parser.MessageBoxCon3Preg();
             Code.seleccLaProdEnLaGram(0);  //pinta de rojo    Program = 'class' ident PosDeclars '{' MethodDeclsOpc '}'.
-            Parser.MessageBoxCon3Preg();
             program.Nodes.Add("class");
             program.ExpandAll(); //Visualiza (Expande) hijo de Program
-            Parser.MessageBoxCon3Preg();
-            //antes del Check (Token.CLASS), token = ...(1,1),  laToken = ..."class".. y la = Token.CLASS
+            Parser.MessageBoxCon3Preg();//antes del Check (Token.CLASS), token = ...(1,1),  laToken = ..."class".. y la = Token.CLASS
             Check(Token.CLASS);   //class ProgrPpal
             //Se cumple que:  (la == expected) => ejecuta Scan => token = ..."class"... y laToden = ..."ProgrPpal" 
             Code.Colorear("token");   //colorea "class" en ventana de Edicion
             //"Program = 'class' ident PosDeclars '{' MethodDeclsOpc '}'."
             //Ya reconoció 'class', ahora va a reconocer ident
             program.Nodes.Add("ident");
-            Parser.MessageBoxCon3Preg();
             Check(Token.IDENT); // "ProgrPpal" => debo insertar el token en la tabla de símbolos
-            // es el comienzo del programa y abrir un nuevo alcance
+            Parser.MessageBoxCon3Preg(); // es el comienzo del programa y abrir un nuevo alcance
             //Ahora token = "ProgrPpal" y laToken = "{"
+
             Code.Colorear("token");  //"class" ya lo pintó, ahora pinta "ProgrPpal"  (lo que hay en token)                                    
             Symbol prog = Tab.Insert(Symbol.Kinds.Prog, token.str, Tab.noType);//lo cuelga de universe
             Code.CreateMetadata(prog);
@@ -273,9 +273,8 @@ namespace at.jku.ssw.cc
             //Ya reconoció ident, ahora va a reconocer PosDeclars
             System.Windows.Forms.TreeNode posDeclars = new System.Windows.Forms.TreeNode("PosDeclars");
             program.Nodes.Add(posDeclars);  //Cuelga un TreeNode porque PosDeclars es No Terminal
-            Parser.MessageBoxCon3Preg();
-            Code.seleccLaProdEnLaGram(1);  //"PosDeclars = . | Declaration PosDeclars.";
-            Parser.MessageBoxCon3Preg();
+            Code.seleccLaProdEnLaGram(1);
+            Parser.MessageBoxCon3Preg(); //"PosDeclars = . | Declaration PosDeclars.";
             bool existeDecl = false;
             //"Declaration = ConstDecl | VarDecl | ClassDecl."
             while (la != Token.LBRACE && la != Token.EOF) //Si no existen declaraciones, la = Token.LBRACE
@@ -331,6 +330,7 @@ namespace at.jku.ssw.cc
                 posDeclars.Nodes.Add(".");
                 posDeclars.ExpandAll(); //Visualiza (Expande) posDeclars
                 Parser.MessageBoxCon3Preg();
+
             }
             if (ZZ.parser)
             {
@@ -494,9 +494,10 @@ namespace at.jku.ssw.cc
             }
             else
             {
-                MessageBoxCon3Preg();
+                
                 identifieropc.Nodes.Add(".");
                 identifieropc.ExpandAll();
+                MessageBoxCon3Preg();
             }
         }//Fin Identifieropc
 
@@ -529,11 +530,11 @@ namespace at.jku.ssw.cc
             System.Windows.Forms.TreeNode lbrakopc = new System.Windows.Forms.TreeNode("LbrakeOpc");
             MessageBoxCon3Preg();
             hijo1.Nodes.Add(lbrakopc);
+            MessageBoxCon3Preg();
             Code.seleccLaProdEnLaGram(13);
             MessageBoxCon3Preg();
             Code.Colorear("latoken");
             //-------------------------------------------------Grupo 2 28/9/2015----------------------------------------------------------------------- 
-            MessageBoxCon3Preg();
             lbrakopc.Nodes.Add(".");
             lbrakopc.ExpandAll();
             MessageBoxCon3Preg();
@@ -559,10 +560,10 @@ namespace at.jku.ssw.cc
             //o Para la vbe Global val
             //o para x en int x;
             Code.seleccLaProdEnLaGram(7);
-            Identifieropc(hijo2, type, kind);
             Code.Colorear("latoken"); 
             Check(Token.SEMICOLON);
             MessageBoxCon3Preg();
+            Identifieropc(hijo2, type, kind);
             Code.seleccLaProdEnLaGram(6);
             Code.Colorear("token");
             padre.Nodes.Add("';'");
@@ -651,14 +652,14 @@ namespace at.jku.ssw.cc
                     ///// Agrega 'TypeOrVoid' al arbol y lo cuelga de MethodDecl
                     methodDecl.Nodes.Add(typeOrVoid);
                     methodDecl.ExpandAll();
-                    MessageBoxCon3Preg();
+                    Parser.MessageBoxCon3Preg();
                     Code.seleccLaProdEnLaGram(9);
                     MessageBoxCon3Preg();
                     ///// Agrega 'void' al arbol y lo cuelga de typeorvoid
                     typeOrVoid.Nodes.Add("'void'");
                     typeOrVoid.Expand();
-                    MessageBoxCon3Preg();
                     Code.seleccLaProdEnLaGram(8);
+                    Parser.MessageBoxCon3Preg();
                     type = Tab.noType; //  para void
                 }
                 else
@@ -703,9 +704,10 @@ namespace at.jku.ssw.cc
                     //infiere que no hay params => 1) debe venir un ")". 2) La pocion de la produccion es "."
                     Code.Colorear("latoken");  //pinta el ")"
                     Check(Token.RPAR);
-                    Code.seleccLaProdEnLaGram(8);
                     pars.Nodes.Add(".");
                     pars.ExpandAll();
+                    MessageBoxCon3Preg();
+                    Code.seleccLaProdEnLaGram(8);
                     methodDecl.Nodes.Add("')'");
                     MessageBoxCon3Preg();
                 }
@@ -762,10 +764,11 @@ namespace at.jku.ssw.cc
                 Code.seleccLaProdEnLaGram(1);
                 MessageBoxCon3Preg();
                 System.Windows.Forms.TreeNode posDeclarsAux = new System.Windows.Forms.TreeNode("PosDeclars");
-                posDeclarsAux.Nodes.Add(".");
                 posDeclarsAux.ExpandAll();
                 posDeclars.Nodes.Add(posDeclarsAux);
                 Code.Colorear("latoken");  //"{"
+                MessageBoxCon3Preg();
+                posDeclarsAux.Nodes.Add(".");
                 MessageBoxCon3Preg();
                 Code.seleccLaProdEnLaGram(8);
                 MessageBoxCon3Preg();
@@ -1345,6 +1348,7 @@ namespace at.jku.ssw.cc
             block.ExpandAll();
             MessageBoxCon3Preg(block);
             Code.seleccLaProdEnLaGram(17);
+            MessageBoxCon3Preg();
             /////// Agrega '.' al arbol si el block esta vacio
             if (la == Token.RBRACE)
             {

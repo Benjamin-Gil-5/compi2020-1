@@ -155,6 +155,7 @@ namespace at.jku.ssw.cc //Compilador //text_Box_Mio
             {
                 Parser.muestraProducciones = false;
                 Parser.muestraCargaDeInstrs = false;
+                Parser.muestraTokens = false;
             }
             else
             {

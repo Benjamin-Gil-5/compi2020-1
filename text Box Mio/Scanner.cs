@@ -84,12 +84,11 @@ public class Scanner {
            ReadNumber(t);
           else
            switch (ch){
-            // -----------------------
-            //| tokens simples        |
-            // -----------------------
-
+                    // -----------------------
+                    //| tokens simples        |
+                    // -----------------------
             case ';':
-                   t.kind = Token.SEMICOLON; t.str = ch.ToString(); NextCh();
+                t.kind = Token.SEMICOLON; t.str = ch.ToString(); NextCh();
                 break;
             case ',': 
                 t.str = ","; t.str = ch.ToString();
@@ -155,7 +154,7 @@ public class Scanner {
                     t.str = "++";
                 }
                 else
-                    t.kind = Token.PLUS; t.str = ch.ToString();
+                    t.kind = Token.PLUS; t.str = "+";
                 break;
             case '-': NextCh();
                 if (ch == '-')
@@ -165,7 +164,7 @@ public class Scanner {
                     t.str = "--";
                 }
                 else
-                { t.kind = Token.MINUS; t.str = ch.ToString(); }
+                { t.kind = Token.MINUS; t.str = "-"; }
                 break;
             case '&': NextCh();
                 if (ch == '&')
